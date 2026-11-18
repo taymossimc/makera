@@ -1,0 +1,5 @@
+# Added by scripts/up.sh when /dev/carvera exists.
+services:
+  controller:
+    devices:
+      - /dev/carvera:/dev/carvera

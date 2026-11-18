@@ -1,0 +1,5 @@
+# Added by scripts/up.sh when /dev/carvera-cam exists.
+services:
+  timelapse:
+    devices:
+      - /dev/carvera-cam:/dev/video0

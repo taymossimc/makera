@@ -1,0 +1,15 @@
+[Unit]
+Description=Fullscreen Carvera controller on the local touchscreen
+After=docker.service
+Wants=docker.service
+
+[Service]
+Type=simple
+User=%i
+Environment=DISPLAY=:0
+ExecStart=/bin/sh -c 'browser=""; for candidate in chromium chromium-browser; do if command -v $$candidate >/dev/null 2>&1; then browser=$$candidate; break; fi; done; test -n "$$browser"; for i in 1 2 3 4 5 6 7 8 9 10 11 12; do curl -sf -o /dev/null http://127.0.0.1:8080/ && break; sleep 5; done; exec $$browser --kiosk --app=http://127.0.0.1:8080 --no-first-run --disable-infobars --disable-session-crashed-bubble --check-for-update-interval=31536000'
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical.target

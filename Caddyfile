@@ -1,0 +1,18 @@
+{
+	admin off
+	auto_https off
+}
+
+:8443 {
+	tls /certs/cert.pem /certs/key.pem
+	basic_auth {
+		{$BASIC_AUTH_USER} {$BASIC_AUTH_HASH}
+	}
+	redir /cam /cam/ 302
+	handle_path /cam/* {
+		reverse_proxy timelapse:8081
+	}
+	handle {
+		reverse_proxy controller:8080
+	}
+}

@@ -1,0 +1,11 @@
+secrets/caddy.env
+secrets/tls/
+config/*
+!config/.gitkeep
+jobs/*
+!jobs/.gitkeep
+!jobs/timelapses/
+jobs/timelapses/*
+!jobs/timelapses/.gitkeep
+__pycache__/
+*.pyc

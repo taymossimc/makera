@@ -1,0 +1,7 @@
+.git
+controller/.git
+jobs
+config
+secrets
+**/__pycache__
+**/*.pyc

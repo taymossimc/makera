@@ -1,0 +1,7 @@
+# Makera Carvera and Carvera Air. The controller board is an FTDI serial device.
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", SYMLINK+="carvera", GROUP="dialout", MODE="0660"
+
+# USB camera used for timelapse. index 0 is the picture node; index 1 is metadata.
+# idVendor and idProduct are the UVC camera on the reference machine. Change them
+# for a different webcam, then rerun scripts/install-udev.sh.
+SUBSYSTEM=="video4linux", ATTR{index}=="0", ATTRS{idVendor}=="32e6", ATTRS{idProduct}=="9221", SYMLINK+="carvera-cam", GROUP="video", MODE="0660"

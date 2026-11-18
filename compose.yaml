@@ -1,0 +1,59 @@
+# Carvera touchscreen stack.
+# Start with scripts/up.sh so the host user id and optional USB devices are set.
+services:
+  controller:
+    build:
+      context: .
+      dockerfile: docker/controller.Dockerfile
+    image: makera-controller
+    restart: unless-stopped
+    user: "${HOST_UID:?set HOST_UID}:${HOST_GID:?set HOST_GID}"
+    group_add:
+      - "${DIALOUT_GID:-20}"
+    ports:
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:5900:5900"
+    volumes:
+      - ./config:/config
+      - ./jobs:/jobs
+    environment:
+      HOME: /config
+      CARVERA_JOBS_DIR: /jobs
+      CARVERA_JOB_STATE: /config/job-state.json
+
+  timelapse:
+    build: ./timelapse
+    image: makera-timelapse
+    restart: unless-stopped
+    user: "${HOST_UID:?set HOST_UID}:${HOST_GID:?set HOST_GID}"
+    group_add:
+      - "${VIDEO_GID:-44}"
+    volumes:
+      - ./config:/config:ro
+      - ./jobs:/jobs
+    environment:
+      CARVERA_CAM: /dev/video0
+      CARVERA_JOB_STATE: /config/job-state.json
+      CARVERA_JOBS_DIR: /jobs
+    depends_on:
+      - controller
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    env_file:
+      - secrets/caddy.env
+    ports:
+      - "8443:8443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./secrets/tls:/certs:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - controller
+      - timelapse
+
+volumes:
+  caddy-data:
+  caddy-config:
